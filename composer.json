@@ -1,6 +1,6 @@
 {
-  "version": "2.0.0",
-  "name": "glorpen/kimai-duration-plugin",
+  "version": "2.1.0",
+  "name": "thefehr/kimai-duration-plugin",
   "description": "Enables setting duration rounding option (same as global one) to override rounding for any Customer, Project or Activity.",
   "authors": [
     {
@@ -12,7 +12,7 @@
   "type": "kimai-plugin",
   "autoload": {
     "psr-4": {
-      "KimaiPlugin\\GlorpenDurationBundle\\": ""
+      "KimaiPlugin\\TheFehrDurationBundle\\": ""
     }
   },
   "scripts": {
@@ -37,7 +37,7 @@
   "extra": {
     "kimai": {
       "require": 20000,
-      "version": "2.0.0",
+      "version": "2.1.0",
       "name": "Overridable duration rounding"
     }
   },

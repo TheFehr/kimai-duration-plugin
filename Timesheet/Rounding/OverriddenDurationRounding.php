@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding;
+namespace KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding;
 
 use App\Entity\EntityWithMetaFields;
 use App\Entity\Timesheet;
@@ -16,7 +16,9 @@ use App\Timesheet\Rounding\RoundingInterface;
 
 class OverriddenDurationRounding implements RoundingInterface
 {
-    public const META_FIELD_NAME = 'glorpen_duration';
+    public const META_DURATION_FIELD_NAME = 'thefehr_duration';
+    public const META_BEGIN_FIELD_NAME = 'thefehr_begin';
+    public const META_END_FIELD_NAME = 'thefehr_end';
 
     /**
      * @var RoundingInterface
@@ -37,13 +39,13 @@ class OverriddenDurationRounding implements RoundingInterface
      * @param EntityWithMetaFields|null $entity
      * @return int|null
      */
-    private function getValue(?EntityWithMetaFields $entity): ?int
+    private function getValue(?EntityWithMetaFields $entity, string $metaField): ?int
     {
         if ($entity === null) {
             return null;
         }
 
-        $metaField = $entity->getMetaField(self::META_FIELD_NAME);
+        $metaField = $entity->getMetaField($metaField);
 
         if ($metaField !== null) {
             return $metaField->getValue();
@@ -54,12 +56,12 @@ class OverriddenDurationRounding implements RoundingInterface
 
     public function roundDuration(Timesheet $record, int $minutes): void
     {
-        $duration = $this->getValue($record->getActivity());
+        $duration = $this->getValue($record->getActivity(), self::META_DURATION_FIELD_NAME);
         if ($duration === null) {
-            $duration = $this->getValue($record->getProject());
+            $duration = $this->getValue($record->getProject(), self::META_DURATION_FIELD_NAME);
         }
         if ($duration === null && $record->getProject() !== null) {
-            $duration = $this->getValue($record->getProject()->getCustomer());
+            $duration = $this->getValue($record->getProject()->getCustomer(), self::META_DURATION_FIELD_NAME);
         }
 
         if ($duration !== null) {
@@ -71,11 +73,35 @@ class OverriddenDurationRounding implements RoundingInterface
 
     public function roundBegin(Timesheet $record, int $minutes): void
     {
+        $duration = $this->getValue($record->getActivity(), self::META_BEGIN_FIELD_NAME);
+        if ($duration === null) {
+            $duration = $this->getValue($record->getProject(), self::META_BEGIN_FIELD_NAME);
+        }
+        if ($duration === null && $record->getProject() !== null) {
+            $duration = $this->getValue($record->getProject()->getCustomer(), self::META_BEGIN_FIELD_NAME);
+        }
+
+        if ($duration !== null) {
+            $minutes = $duration;
+        }
+
         $this->vendorRounding->roundBegin($record, $minutes);
     }
 
     public function roundEnd(Timesheet $record, int $minutes): void
     {
+        $duration = $this->getValue($record->getActivity(), self::META_END_FIELD_NAME);
+        if ($duration === null) {
+            $duration = $this->getValue($record->getProject(), self::META_END_FIELD_NAME);
+        }
+        if ($duration === null && $record->getProject() !== null) {
+            $duration = $this->getValue($record->getProject()->getCustomer(), self::META_END_FIELD_NAME);
+        }
+
+        if ($duration !== null) {
+            $minutes = $duration;
+        }
+
         $this->vendorRounding->roundEnd($record, $minutes);
     }
 }

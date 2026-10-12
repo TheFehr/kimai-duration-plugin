@@ -9,9 +9,9 @@ Enables setting duration rounding option (same as global one) to override roundi
 
 ## Installation
 
-Checkout plugin into `var/plugins/GlorpenDurationBundle` & clear cache.
+Checkout plugin into `var/plugins/TheFehrDurationBundle` & clear cache.
 
-Run `bin/console kimai:bundle:glorpen-duration:install`.
+Run `bin/console kimai:bundle:thefehr-duration:install`.
 
 ## Usage
 

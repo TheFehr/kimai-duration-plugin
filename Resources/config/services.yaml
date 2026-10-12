@@ -4,30 +4,30 @@ services:
     autoconfigure: true
     public: false
 
-  glorpen.timesheet.rounding.default:
-    class: KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
+  thefehr.timesheet.rounding.default:
+    class: KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
     decorates: App\Timesheet\Rounding\DefaultRounding
     arguments:
-      - '@glorpen.timesheet.rounding.default.inner'
+      - '@thefehr.timesheet.rounding.default.inner'
 
-  glorpen.timesheet.rounding.ceil:
-    class: KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
+  thefehr.timesheet.rounding.ceil:
+    class: KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
     decorates: App\Timesheet\Rounding\CeilRounding
     arguments:
-      - '@glorpen.timesheet.rounding.ceil.inner'
+      - '@thefehr.timesheet.rounding.ceil.inner'
 
-  glorpen.timesheet.rounding.closest:
-    class: KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
+  thefehr.timesheet.rounding.closest:
+    class: KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
     decorates: App\Timesheet\Rounding\ClosestRounding
     arguments:
-      - '@glorpen.timesheet.rounding.closest.inner'
+      - '@thefehr.timesheet.rounding.closest.inner'
 
-  glorpen.timesheet.rounding.floor:
-    class: KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
+  thefehr.timesheet.rounding.floor:
+    class: KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding\OverriddenDurationRounding
     decorates: App\Timesheet\Rounding\FloorRounding
     arguments:
-      - '@glorpen.timesheet.rounding.floor.inner'
+      - '@thefehr.timesheet.rounding.floor.inner'
 
-  KimaiPlugin\GlorpenDurationBundle\:
+  KimaiPlugin\TheFehrDurationBundle\:
     resource: '../../*'
     exclude: '../../{Resources,Migrations,Timesheet}'

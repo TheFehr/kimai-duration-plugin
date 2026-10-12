@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KimaiPlugin\GlorpenDurationBundle\Command;
+namespace KimaiPlugin\TheFehrDurationBundle\Command;
 
 use App\Command\AbstractBundleInstallerCommand;
 
@@ -16,11 +16,11 @@ class InstallCommand extends AbstractBundleInstallerCommand
 {
     protected function getBundleCommandNamePart(): string
     {
-        return 'glorpen-duration';
+        return 'thefehr-duration';
     }
 
     protected function getMigrationConfigFilename(): ?string
     {
-        return __DIR__ . '/../Migrations/glorpen-duration.yaml';
+        return null;
     }
 }

@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace KimaiPlugin\GlorpenDurationBundle;
+namespace KimaiPlugin\TheFehrDurationBundle;
 
 use App\Plugin\PluginInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class GlorpenDurationBundle extends Bundle implements PluginInterface
+class TheFehrDurationBundle extends Bundle implements PluginInterface
 {
 }

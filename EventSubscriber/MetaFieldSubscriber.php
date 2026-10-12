@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace KimaiPlugin\GlorpenDurationBundle\EventSubscriber;
+namespace KimaiPlugin\TheFehrDurationBundle\EventSubscriber;
 
 use App\Entity\ActivityMeta;
 use App\Entity\CustomerMeta;
@@ -20,7 +20,7 @@ use App\Event\CustomerMetaDefinitionEvent;
 use App\Event\CustomerMetaDisplayEvent;
 use App\Event\ProjectMetaDefinitionEvent;
 use App\Event\ProjectMetaDisplayEvent;
-use KimaiPlugin\GlorpenDurationBundle\Timesheet\Rounding\OverriddenDurationRounding;
+use KimaiPlugin\TheFehrDurationBundle\Timesheet\Rounding\OverriddenDurationRounding;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints as Constraints;
@@ -39,14 +39,9 @@ class MetaFieldSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function loadActivityMeta(ActivityMetaDefinitionEvent $event): void
+    private function setUpDurationMetaField(MetaTableTypeInterface $field): MetaTableTypeInterface
     {
-        $event->getEntity()->setMetaField($this->setUpMetaField(new ActivityMeta()));
-    }
-
-    private function setUpMetaField(MetaTableTypeInterface $field): MetaTableTypeInterface
-    {
-        return $field->setName(OverriddenDurationRounding::META_FIELD_NAME)
+        return $field->setName(OverriddenDurationRounding::META_DURATION_FIELD_NAME)
             ->setLabel('Duration rounding')
             ->setOptions(['label' => 'Rounding of the duration in minutes (0 = deactivated)', 'help' => 'Leave empty to use global values'])
             ->setType(NumberType::class)
@@ -54,28 +49,70 @@ class MetaFieldSubscriber implements EventSubscriberInterface
             ->setIsVisible(false);
     }
 
+    private function setUpBeginningMetaField(MetaTableTypeInterface $field): MetaTableTypeInterface
+    {
+        return $field->setName(OverriddenDurationRounding::META_BEGIN_FIELD_NAME)
+            ->setLabel('Beginning rounding')
+            ->setOptions(['label' => 'Rounding of the Beginning in minutes (0 = deactivated)', 'help' => 'Leave empty to use global values'])
+            ->setType(NumberType::class)
+            ->addConstraint(new Constraints\PositiveOrZero())
+            ->setIsVisible(false);
+    }
+
+    private function setUpEndingMetaField(MetaTableTypeInterface $field): MetaTableTypeInterface
+    {
+        return $field->setName(OverriddenDurationRounding::META_END_FIELD_NAME)
+            ->setLabel('Ending rounding')
+            ->setOptions(['label' => 'Rounding of the Ending in minutes (0 = deactivated)', 'help' => 'Leave empty to use global values'])
+            ->setType(NumberType::class)
+            ->addConstraint(new Constraints\PositiveOrZero())
+            ->setIsVisible(false);
+    }
+
+    public function loadActivityMeta(ActivityMetaDefinitionEvent $event): void
+    {
+        $this->loadMeta($event, ActivityMeta::class);
+    }
+
     public function loadActivityFields(ActivityMetaDisplayEvent $event): void
     {
-        $event->addField($this->setUpMetaField(new ActivityMeta()));
+        $this->loadFields($event, ActivityMeta::class);
     }
 
     public function loadProjectMeta(ProjectMetaDefinitionEvent $event): void
     {
-        $event->getEntity()->setMetaField($this->setUpMetaField(new ProjectMeta()));
+        $this->loadMeta($event, ProjectMeta::class);
     }
 
     public function loadProjectFields(ProjectMetaDisplayEvent $event): void
     {
-        $event->addField($this->setUpMetaField(new ProjectMeta()));
+        $this->loadFields($event, ProjectMeta::class);
     }
 
     public function loadCustomerMeta(CustomerMetaDefinitionEvent $event): void
     {
-        $event->getEntity()->setMetaField($this->setUpMetaField(new CustomerMeta()));
+        $this->loadMeta($event, CustomerMeta::class);
     }
 
     public function loadCustomerFields(CustomerMetaDisplayEvent $event): void
     {
-        $event->addField($this->setUpMetaField(new CustomerMeta()));
+        $this->loadFields($event, CustomerMeta::class);
+    }
+
+    private function loadMeta($event, $metaKlass): void
+    {
+        $event->getEntity()
+            ->setMetaField($this->setUpDurationMetaField(new $metaKlass()));
+        $event->getEntity()
+            ->setMetaField($this->setUpBeginningMetaField(new $metaKlass()));
+        $event->getEntity()
+            ->setMetaField($this->setUpEndingMetaField(new $metaKlass()));
+    }
+
+    private function loadFields($event, $metaKlass): void
+    {
+        $event->addField($this->setUpDurationMetaField(new $metaKlass()));
+        $event->addField($this->setUpBeginningMetaField(new $metaKlass()));
+        $event->addField($this->setUpEndingMetaField(new $metaKlass()));
     }
 }
